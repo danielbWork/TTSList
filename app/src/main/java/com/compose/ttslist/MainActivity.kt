@@ -54,10 +54,12 @@ fun TopBar() {
 @Composable
 fun MainScreen() {
 	val textState = remember { mutableStateOf(TextFieldValue("")) }
+	val textList = remember { mutableListOf("a", "sadnjisdansjad asmkdasd asmidomsado sdad", "b") }
+
 	Column {
 		SearchView(textState)
 		// TODO Add actual text here
-		TextList(state = textState)
+		TextList(state = textState, textList)
 	}
 }
 
