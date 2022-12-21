@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.compose.ttslist.ui.theme.TTSListTheme
 
 class MainActivity : ComponentActivity() {
@@ -54,7 +55,8 @@ fun TopBar() {
 @Composable
 fun MainScreen() {
 	val textState = remember { mutableStateOf(TextFieldValue("")) }
-	val textList = remember { mutableListOf("a", "sadnjisdansjad asmkdasd asmidomsado sdad", "b") }
+	val textList = remember { mutableListOf("a", "sadnjisdansjad asmkdasd asmidomsado sdad",
+			"bob says hi") }
 
 	Column {
 		SearchView(textState)

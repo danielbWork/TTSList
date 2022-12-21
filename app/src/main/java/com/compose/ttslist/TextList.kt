@@ -1,6 +1,6 @@
 package com.compose.ttslist
 
-import androidx.compose.foundation.clickable
+import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,20 +16,24 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import java.util.*
 
 
 @Composable
-fun TextListItem(text: String, onItemClick: (String) -> Unit) {
+fun TextListItem(text: String, onPlay: (Context, String) -> Unit) {
+
+	val context = LocalContext.current;
+
 	Row(
 			verticalAlignment = Alignment.CenterVertically,
 			modifier = Modifier
-					.clickable(onClick = { onItemClick(text) })
 // fixme					.background(MaterialTheme.colors.primaryVariant)
 					.fillMaxWidth()
 					.padding(5.dp)
@@ -68,7 +72,7 @@ fun TextListItem(text: String, onItemClick: (String) -> Unit) {
 
 			IconButton(
 					onClick = {
-						// TODO Play
+						onPlay(context, text)
 					}
 			) {
 				Icon(
@@ -86,6 +90,9 @@ fun TextListItem(text: String, onItemClick: (String) -> Unit) {
 
 @Composable
 fun TextList(state: MutableState<TextFieldValue>, textValues: MutableList<String>) {
+
+	val viewModel: TTSViewModel = viewModel()
+
 	LazyColumn(modifier = Modifier.fillMaxWidth()) {
 		val searchedText = state.value.text
 		if (textValues.isEmpty()) {
@@ -98,12 +105,15 @@ fun TextList(state: MutableState<TextFieldValue>, textValues: MutableList<String
 					.contains(searchedText.lowercase(Locale.getDefault())) }
 			 ArrayList<String>()
 
+			// TODO handle deleting and editing
+
 			items(filteredText) {
 
 				TextListItem(text = it,
-						onItemClick = { text ->
-							/* Add code later */
-							//TODO add on delete, on edit and on play
+						onPlay = { context, text ->
+
+								viewModel.playText(context, text)
+
 						})
 			}
 
@@ -124,5 +134,5 @@ fun TextListPreview() {
 @Preview(showBackground = true)
 @Composable
 fun TextListItemPreview() {
-	TextListItem(text = "United States 🇺🇸", onItemClick = { })
+	TextListItem(text = "United States 🇺🇸", onPlay = { context: Context, s: String -> })
 }
