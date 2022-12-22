@@ -11,14 +11,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,7 +24,7 @@ import java.util.*
 
 
 @Composable
-fun TextListItem(text: String, onPlay: (Context, String) -> Unit) {
+fun MessageListItem(text: String, onPlay: (Context, String) -> Unit) {
 
 	val context = LocalContext.current;
 
@@ -89,9 +86,11 @@ fun TextListItem(text: String, onPlay: (Context, String) -> Unit) {
 
 
 @Composable
-fun TextList(state: MutableState<TextFieldValue>, textValues: MutableList<String>) {
+fun MessageList() {
 
 	val viewModel: TTSViewModel = viewModel()
+	val state = viewModel.textState
+	val textValues = viewModel.textList
 
 	LazyColumn(modifier = Modifier.fillMaxWidth()) {
 		val searchedText = state.value.text
@@ -109,7 +108,7 @@ fun TextList(state: MutableState<TextFieldValue>, textValues: MutableList<String
 
 			items(filteredText) {
 
-				TextListItem(text = it,
+				MessageListItem(text = it,
 						onPlay = { context, text ->
 
 								viewModel.playText(context, text)
@@ -122,17 +121,17 @@ fun TextList(state: MutableState<TextFieldValue>, textValues: MutableList<String
 	}
 }
 
-@Preview(showBackground = true)
-@Composable
-fun TextListPreview() {
-	val textState = remember { mutableStateOf(TextFieldValue("")) }
-	val textList = remember { mutableListOf("a", "sadnjisdansjad asmkdasd asmidomsado sdad", "b") }
-
-	TextList(state = textState, textList)
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun TextListPreview() {
+//	val textState = remember { mutableStateOf(TextFieldValue("")) }
+//	val textList = remember { mutableListOf("a", "sadnjisdansjad asmkdasd asmidomsado sdad", "b") }
+//
+//	TextList()
+//}
 
 @Preview(showBackground = true)
 @Composable
 fun TextListItemPreview() {
-	TextListItem(text = "United States 🇺🇸", onPlay = { context: Context, s: String -> })
+	MessageListItem(text = "United States 🇺🇸", onPlay = { context: Context, s: String -> })
 }

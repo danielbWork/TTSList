@@ -2,8 +2,10 @@ package com.compose.ttslist
 
 import android.content.Context
 import android.speech.tts.TextToSpeech
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import java.util.Locale
@@ -12,6 +14,12 @@ import java.util.Locale
  * View model handling all the tts stuff
  */
 class TTSViewModel: ViewModel() {
+
+	val textState = mutableStateOf(TextFieldValue(""))
+	val textList = mutableListOf("a", "sadnjisdansjad asmkdasd asmidomsado sdad",
+			"bob says hi").toMutableStateList()
+
+	val isAddDialogOpen = mutableStateOf(false)
 
 	private  var  textToSpeech:TextToSpeech? = null
 
