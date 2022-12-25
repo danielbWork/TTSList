@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -30,17 +31,16 @@ import kotlinx.coroutines.delay
  * @param isDialogOpen Flag marking if te dialog is open or closed
  * @param task Used to mark that user is adding a subtask
  */
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AddMessageDialog(
 		ttsViewModel: TTSViewModel
 ) {
 	var newMessage by remember { mutableStateOf(TextFieldValue("")) }
-
+	val context = LocalContext.current
 	BaseDialog(title = "Add Message",ttsViewModel.isAddDialogOpen, onSubmit = {
 		if (newMessage.text.trim().isNotEmpty()) {
 
-			ttsViewModel.textList.add(newMessage.text.trim())
+			ttsViewModel.addToList(newMessage.text.trim(), context)
 		}
 	}, submitText = "Done") {
 

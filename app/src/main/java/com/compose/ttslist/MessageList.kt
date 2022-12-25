@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -90,16 +92,31 @@ fun MessageList() {
 
 	val viewModel: TTSViewModel = viewModel()
 	val state = viewModel.textState
-	val textValues = viewModel.textList
+	val textValues = viewModel.getTextList()
+
+	if (textValues.isEmpty()) {
+
+		Box(modifier = Modifier.padding(20.dp, 0.dp, 20.dp, 0.dp).fillMaxHeight()) {
+			Button(
+
+					shape = RoundedCornerShape(50.dp),
+					modifier = Modifier
+							.fillMaxWidth()
+							.defaultMinSize(minHeight = 50.dp).align(Alignment.Center),
+					onClick = {
+						viewModel.isAddDialogOpen.value = true
+					},
+			) {
+				Text(text = "Add Message")
+			}
+		}
+
+		return
+	}
 
 	LazyColumn(modifier = Modifier.fillMaxWidth()) {
 		val searchedText = state.value.text
-		if (textValues.isEmpty()) {
-			// TODO Add empty code
 
-
-
-		} else {
 			val filteredText = textValues.filter { it.lowercase().lowercase(Locale.getDefault())
 					.contains(searchedText.lowercase(Locale.getDefault())) }
 			 ArrayList<String>()
@@ -116,7 +133,7 @@ fun MessageList() {
 						})
 			}
 
-		}
+
 
 	}
 }

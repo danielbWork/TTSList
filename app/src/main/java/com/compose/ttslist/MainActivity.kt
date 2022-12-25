@@ -26,6 +26,9 @@ class MainActivity : ComponentActivity() {
 		super.onCreate(savedInstanceState)
 		setContent {
 			TTSListTheme {
+				val viewModel: TTSViewModel = viewModel()
+
+				viewModel.load(this)
 
 				Scaffold(
 						topBar = { TopBar() },
@@ -33,7 +36,7 @@ class MainActivity : ComponentActivity() {
 				) {padding -> // We need to pass scaffold's inner padding to content. That's why we use Box.
 					Box(modifier = Modifier.padding(padding)) {
 
-						val viewModel: TTSViewModel = viewModel()
+
 
 						MainScreen()
 

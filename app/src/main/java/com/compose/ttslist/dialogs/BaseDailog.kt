@@ -95,6 +95,7 @@ fun BaseDialog(
 											if(onDismiss !== null){
 												onDismiss()
 											}
+											isDialogOpen.value = false
 										})
 					}
 
