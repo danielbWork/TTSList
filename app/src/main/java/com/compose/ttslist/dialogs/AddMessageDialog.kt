@@ -27,9 +27,8 @@ import com.compose.ttslist.TTSViewModel
 import kotlinx.coroutines.delay
 
 /**
- * Dialog asking user for name to add a task
- * @param isDialogOpen Flag marking if te dialog is open or closed
- * @param task Used to mark that user is adding a subtask
+ * Dialog asking user for a message
+ * @param ttsViewModel The view model used to add to the list
  */
 @Composable
 fun AddMessageDialog(

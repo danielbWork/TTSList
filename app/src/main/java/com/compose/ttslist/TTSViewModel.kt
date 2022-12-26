@@ -27,6 +27,9 @@ class TTSViewModel: ViewModel() {
 
 	val isAddDialogOpen = mutableStateOf(false)
 
+	val isRemoveDialogOpen = mutableStateOf(false)
+	var messageToRemoveIndex = 0
+
 	private  var  textToSpeech:TextToSpeech? = null
 
 
@@ -34,6 +37,15 @@ class TTSViewModel: ViewModel() {
 	 * Get immutable version of the text list
 	 */
 	fun getTextList() = textList.toList()
+
+	// region Open Dialogs
+
+	fun openRemoveFromListDialog(index: Int) {
+		messageToRemoveIndex = index
+		isRemoveDialogOpen.value = true
+	}
+
+	// endregion
 
 	// region Update List
 
@@ -44,6 +56,26 @@ class TTSViewModel: ViewModel() {
 	 */
 	fun addToList(text: String,context: Context) {
 		textList.add(text)
+		save(context)
+	}
+
+	/**
+	 * Removes the message in given index from the list
+	 * @param context The context used to save the list
+	 */
+	fun removeFromList(context: Context) {
+		textList.removeAt(messageToRemoveIndex)
+		save(context)
+	}
+
+
+	/**
+	 * Edits the text in the list
+	 * @param text The new text for the item
+	 * @param context The context used to save the list
+	 */
+	fun editListItem(text: String,context: Context) {
+		textList[0] = text // fixme
 		save(context)
 	}
 
@@ -120,6 +152,7 @@ class TTSViewModel: ViewModel() {
 	 * Whether or not the text to speech is working
 	 */
 	fun isPlaying() = textToSpeech?.isSpeaking ?: false
+
 
 	// endregion
 }

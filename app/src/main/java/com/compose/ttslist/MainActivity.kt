@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.compose.ttslist.dialogs.AddMessageDialog
+import com.compose.ttslist.dialogs.DeleteTaskDialog
 import com.compose.ttslist.ui.theme.TTSListTheme
 
 class MainActivity : ComponentActivity() {
@@ -44,6 +45,9 @@ class MainActivity : ComponentActivity() {
 							AddMessageDialog(ttsViewModel = viewModel)
 						}
 
+						if(viewModel.isRemoveDialogOpen.value){
+							DeleteTaskDialog(ttsViewModel = viewModel)
+						}
 					}
 				}
 

@@ -13,12 +13,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -26,7 +24,9 @@ import java.util.*
 
 
 @Composable
-fun MessageListItem(text: String, onPlay: (Context, String) -> Unit) {
+fun MessageListItem(
+		textWithIndex: IndexedValue<String>, onPlay: (Context, String) -> Unit, onRemove:(Int) ->
+Unit, onEdit: (Int)->Unit) {
 
 	val context = LocalContext.current;
 
@@ -42,7 +42,7 @@ fun MessageListItem(text: String, onPlay: (Context, String) -> Unit) {
 
 		IconButton(
 				onClick = {
-					// TODO Add remove
+					onRemove(textWithIndex.index)
 				}
 		) {
 			Icon(
@@ -52,14 +52,13 @@ fun MessageListItem(text: String, onPlay: (Context, String) -> Unit) {
 							.size(24.dp)
 			)
 		}
-		// TODO Add tts and edit buttons
-		Text(text = text, fontSize = 18.sp, modifier = Modifier.fillMaxWidth(0.7f))
+		Text(text = textWithIndex.value, fontSize = 18.sp, modifier = Modifier.fillMaxWidth(0.7f))
 
 		Row {
 			Spacer(modifier = Modifier.weight(1f))
 			IconButton(
 					onClick = {
-						// TODO Edit
+						onEdit(textWithIndex.index)
 					}
 			) {
 				Icon(
@@ -71,7 +70,7 @@ fun MessageListItem(text: String, onPlay: (Context, String) -> Unit) {
 
 			IconButton(
 					onClick = {
-						onPlay(context, text)
+						onPlay(context, textWithIndex.value)
 					}
 			) {
 				Icon(
@@ -117,20 +116,29 @@ fun MessageList() {
 	LazyColumn(modifier = Modifier.fillMaxWidth()) {
 		val searchedText = state.value.text
 
-			val filteredText = textValues.filter { it.lowercase().lowercase(Locale.getDefault())
+			val filteredTextWithIndex = textValues.withIndex().toList().filter { it.value.lowercase(Locale
+					.getDefault())
 					.contains(searchedText.lowercase(Locale.getDefault())) }
 			 ArrayList<String>()
 
-			// TODO handle deleting and editing
+			// TODO handle editing
 
-			items(filteredText) {
+			items(filteredTextWithIndex) {
 
-				MessageListItem(text = it,
+				MessageListItem(textWithIndex = it,
 						onPlay = { context, text ->
 
 								viewModel.playText(context, text)
 
-						})
+						},
+						onRemove = { index ->
+							viewModel.openRemoveFromListDialog(index)
+						},
+						onEdit = { index ->
+							// fixme since this should open a dialog
+//							viewModel.editListItem(newText, index, context)
+						}
+				)
 			}
 
 
@@ -147,8 +155,8 @@ fun MessageList() {
 //	TextList()
 //}
 
-@Preview(showBackground = true)
-@Composable
-fun TextListItemPreview() {
-	MessageListItem(text = "United States 🇺🇸", onPlay = { context: Context, s: String -> })
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun TextListItemPreview() {
+//	MessageListItem(text = "United States 🇺🇸", onPlay = { context: Context, s: String -> })
+//}
