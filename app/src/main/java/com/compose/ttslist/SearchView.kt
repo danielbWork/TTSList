@@ -29,7 +29,7 @@ fun SearchView(state: MutableState<TextFieldValue>) {
 				state.value = value
 			},
 			modifier = Modifier
-					.fillMaxWidth(),
+					.fillMaxWidth().padding(8.dp),
 			textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
 			leadingIcon = {
 				Icon(
@@ -65,7 +65,6 @@ fun SearchView(state: MutableState<TextFieldValue>) {
 					cursorColor = Color.White,
 					leadingIconColor = Color.White,
 					trailingIconColor = Color.White,
-					backgroundColor = MaterialTheme.colors.primary,
 					focusedIndicatorColor = Color.Transparent,
 					unfocusedIndicatorColor = Color.Transparent,
 					disabledIndicatorColor = Color.Transparent

@@ -94,7 +94,6 @@ fun MainScreen() {
 
 	Column {
 		SearchView(viewModel.textState)
-		// TODO Add actual text here
 		MessageList()
 	}
 }

@@ -1,14 +1,12 @@
 package com.compose.ttslist
 
 import android.content.Context
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
@@ -33,7 +31,6 @@ Unit, onEdit: (Int)->Unit) {
 	Row(
 			verticalAlignment = Alignment.CenterVertically,
 			modifier = Modifier
-// fixme					.background(MaterialTheme.colors.primaryVariant)
 					.fillMaxWidth()
 					.padding(5.dp)
 	) {
@@ -120,8 +117,6 @@ fun MessageList() {
 					.getDefault())
 					.contains(searchedText.lowercase(Locale.getDefault())) }
 			 ArrayList<String>()
-
-			// TODO handle editing
 
 			items(filteredTextWithIndex) {
 
