@@ -135,8 +135,7 @@ fun MessageList() {
 							viewModel.openRemoveFromListDialog(index)
 						},
 						onEdit = { index ->
-							// fixme since this should open a dialog
-//							viewModel.editListItem(newText, index, context)
+							viewModel.openEditMessageDialog(index)
 						}
 				)
 			}

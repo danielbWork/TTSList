@@ -30,6 +30,9 @@ class TTSViewModel: ViewModel() {
 	val isRemoveDialogOpen = mutableStateOf(false)
 	var messageToRemoveIndex = 0
 
+	val isEditingDialogOpen = mutableStateOf(false)
+	var messageToEditIndex = 0
+
 	private  var  textToSpeech:TextToSpeech? = null
 
 
@@ -40,9 +43,22 @@ class TTSViewModel: ViewModel() {
 
 	// region Open Dialogs
 
+	/**
+	 * Opens the dialog to confirm if user wants to delete the message
+	 * @param index The index of the message in the list
+	 */
 	fun openRemoveFromListDialog(index: Int) {
 		messageToRemoveIndex = index
 		isRemoveDialogOpen.value = true
+	}
+
+	/**
+	 * Opens the dialog to enable editing the message
+	 * @param index The index of the message in the list
+	 */
+	fun openEditMessageDialog(index: Int) {
+		messageToEditIndex = index
+		isEditingDialogOpen.value = true
 	}
 
 	// endregion
@@ -75,7 +91,7 @@ class TTSViewModel: ViewModel() {
 	 * @param context The context used to save the list
 	 */
 	fun editListItem(text: String,context: Context) {
-		textList[0] = text // fixme
+		textList[messageToEditIndex] = text
 		save(context)
 	}
 
