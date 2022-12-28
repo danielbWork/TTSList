@@ -103,6 +103,8 @@ class TTSViewModel : ViewModel() {
 	 */
 	fun load(context: Context) {
 
+		this.textList.clear()
+
 		val file = File(context.filesDir, MESSAGE_LIST_FILENAME)
 
 		// Creates the file for the first time
