@@ -2,15 +2,12 @@ package com.compose.ttslist
 
 import android.content.Context
 import android.speech.tts.TextToSpeech
-import androidx.compose.runtime.MutableState
+import android.speech.tts.UtteranceProgressListener
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import java.io.File
-import java.util.Locale
-import kotlin.streams.toList
 
 const val MESSAGE_LIST_FILENAME = "messages.txt"
 
@@ -18,7 +15,7 @@ const val MESSAGE_LIST_FILENAME = "messages.txt"
 /**
  * View model handling all the tts stuff
  */
-class TTSViewModel: ViewModel() {
+class TTSViewModel : ViewModel() {
 
 
 	val textState = mutableStateOf(TextFieldValue(""))
@@ -33,7 +30,9 @@ class TTSViewModel: ViewModel() {
 	val isEditingDialogOpen = mutableStateOf(false)
 	var messageToEditIndex = 0
 
-	private  var  textToSpeech:TextToSpeech? = null
+	var playingMessageIndex = mutableStateOf(-1)
+
+	var textToSpeech: TextToSpeech? = null
 
 
 	/**
@@ -70,7 +69,7 @@ class TTSViewModel: ViewModel() {
 	 * @param text The text added to the list
 	 * @param context The context used to save the list
 	 */
-	fun addToList(text: String,context: Context) {
+	fun addToList(text: String, context: Context) {
 		textList.add(text)
 		save(context)
 	}
@@ -90,7 +89,7 @@ class TTSViewModel: ViewModel() {
 	 * @param text The new text for the item
 	 * @param context The context used to save the list
 	 */
-	fun editListItem(text: String,context: Context) {
+	fun editListItem(text: String, context: Context) {
 		textList[messageToEditIndex] = text
 		save(context)
 	}
@@ -102,12 +101,12 @@ class TTSViewModel: ViewModel() {
 	/**
 	 * Load the text
 	 */
-	fun load(context: Context){
+	fun load(context: Context) {
 
 		val file = File(context.filesDir, MESSAGE_LIST_FILENAME)
 
 		// Creates the file for the first time
-		if(!file.exists()){
+		if (!file.exists()) {
 			save(context)
 			return
 		}
@@ -131,26 +130,53 @@ class TTSViewModel: ViewModel() {
 
 	// region Audio
 
-	// TODO add updater for icon
-
 	/**
 	 * Plays the text, closing any text played before.
 	 *
 	 * @param context The context the text was pulled from
-	 * @param textValue The text to play
+	 * @param messageIndex The index of the message to play
 	 */
-	fun playText(context:Context, textValue: String){
-		if(textToSpeech === null){
-			textToSpeech = TextToSpeech(context){
+	fun playText(context: Context, messageIndex: Int) {
+
+		playingMessageIndex.value = messageIndex
+
+		if (textToSpeech === null) {
+			textToSpeech = TextToSpeech(context) {
 
 				if (it == TextToSpeech.SUCCESS) {
-					textToSpeech?.let { txtToSpeech ->
-						txtToSpeech.setSpeechRate(1.0f)
-						txtToSpeech.speak(
-								textValue,
+					textToSpeech?.let { textToSpeech ->
+
+						textToSpeech.setOnUtteranceProgressListener(
+								object : UtteranceProgressListener() {
+
+									var currentUtteranceId: String? = null
+
+									override fun onStart(utteranceId: String?) {
+										println(utteranceId)
+										currentUtteranceId = utteranceId
+									}
+
+									override fun onDone(utteranceId: String?) {
+										println(currentUtteranceId)
+										println(utteranceId)
+										if (currentUtteranceId == utteranceId) {
+											currentUtteranceId = null
+											playingMessageIndex.value = -1
+										}
+									}
+
+									@Deprecated("Deprecated in Java")
+									override fun onError(utteranceId: String?) {
+									}
+
+								})
+
+						textToSpeech.setSpeechRate(1.0f)
+						textToSpeech.speak(
+								textList[playingMessageIndex.value],
 								TextToSpeech.QUEUE_FLUSH,
 								null,
-								null
+								"${playingMessageIndex.value}"
 						)
 					}
 				}
@@ -160,14 +186,18 @@ class TTSViewModel: ViewModel() {
 			return;
 		}
 
-		textToSpeech?.stop()
-		textToSpeech?.speak(textValue, TextToSpeech.QUEUE_FLUSH, null, null)
+		textToSpeech?.speak(
+				textList[playingMessageIndex.value], TextToSpeech.QUEUE_FLUSH, null,
+				"${playingMessageIndex.value}"
+		)
 	}
 
 	/**
-	 * Whether or not the text to speech is working
+	 * Stops playing the text to speech
 	 */
-	fun isPlaying() = textToSpeech?.isSpeaking ?: false
+	fun stopPlaying() {
+		textToSpeech?.stop()
+	}
 
 
 	// endregion

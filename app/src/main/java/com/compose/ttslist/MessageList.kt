@@ -1,7 +1,6 @@
 package com.compose.ttslist
 
 import android.content.Context
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,8 +22,10 @@ import java.util.*
 
 @Composable
 fun MessageListItem(
-		textWithIndex: IndexedValue<String>, onPlay: (Context, String) -> Unit, onRemove:(Int) ->
-Unit, onEdit: (Int)->Unit) {
+		textWithIndex: IndexedValue<String>, isPlaying: Boolean, onPlay: (Context) -> Unit, onStop:
+		() -> Unit,
+		onRemove:() ->
+Unit, onEdit: ()->Unit) {
 
 	val context = LocalContext.current;
 
@@ -35,11 +36,9 @@ Unit, onEdit: (Int)->Unit) {
 					.padding(5.dp)
 	) {
 
-		// TODO maybe update icon colors
-
 		IconButton(
 				onClick = {
-					onRemove(textWithIndex.index)
+					onRemove()
 				}
 		) {
 			Icon(
@@ -55,7 +54,7 @@ Unit, onEdit: (Int)->Unit) {
 			Spacer(modifier = Modifier.weight(1f))
 			IconButton(
 					onClick = {
-						onEdit(textWithIndex.index)
+						onEdit()
 					}
 			) {
 				Icon(
@@ -67,11 +66,12 @@ Unit, onEdit: (Int)->Unit) {
 
 			IconButton(
 					onClick = {
-						onPlay(context, textWithIndex.value)
+						if(isPlaying) onStop() else onPlay(context)
 					}
 			) {
 				Icon(
-						painter = painterResource(id = R.drawable.ic_play),
+						painter = painterResource(id = if(isPlaying) R.drawable.ic_stop
+						else R.drawable.ic_play ),
 						contentDescription = "",
 						modifier = Modifier
 								.size(24.dp)
@@ -121,16 +121,20 @@ fun MessageList() {
 			items(filteredTextWithIndex) {
 
 				MessageListItem(textWithIndex = it,
-						onPlay = { context, text ->
+						isPlaying = it.index == viewModel.playingMessageIndex.value,
+						onPlay = { context ->
 
-								viewModel.playText(context, text)
+								viewModel.playText(context, it.index)
 
 						},
-						onRemove = { index ->
-							viewModel.openRemoveFromListDialog(index)
+						onStop = {
+								 viewModel.stopPlaying()
 						},
-						onEdit = { index ->
-							viewModel.openEditMessageDialog(index)
+						onRemove = {
+							viewModel.openRemoveFromListDialog(it.index)
+						},
+						onEdit = {
+							viewModel.openEditMessageDialog(it.index)
 						}
 				)
 			}
@@ -139,18 +143,3 @@ fun MessageList() {
 
 	}
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun TextListPreview() {
-//	val textState = remember { mutableStateOf(TextFieldValue("")) }
-//	val textList = remember { mutableListOf("a", "sadnjisdansjad asmkdasd asmidomsado sdad", "b") }
-//
-//	TextList()
-//}
-
-//@Preview(showBackground = true)
-//@Composable
-//fun TextListItemPreview() {
-//	MessageListItem(text = "United States 🇺🇸", onPlay = { context: Context, s: String -> })
-//}
